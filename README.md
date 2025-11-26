@@ -46,6 +46,7 @@ Adiciona:
 ➕ Multi-product licensing system
 ➕ WSL sync scripts
 ➕ Product scaffolding tools
+➕ GitHub Spec-Kit (desenvolvimento orientado por especificações)
 ```
 
 ---
@@ -172,6 +173,7 @@ Cria automaticamente:
 - [Design System](./docs/design-system.md)
 - [Deployment](./docs/deployment.md)
 - [Architecture](./docs/architecture.md)
+- [Spec-Kit](./.spec-kit/README.md) - Desenvolvimento orientado por especificações
 
 ---
 
