@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Organizations (Tenants)
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  domain    String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users            User[]
+  subscriptions    OrganizationSubscription[]
+  ragCorpora       RAGCorpus[]
+
+  @@map("organizations")
+}
+
+// Users
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  name           String
+  firebaseUid    String       @unique
+  organizationId String
+  role           UserRole     @default(MEMBER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+// Products
+model Product {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  description String
+  basePrice   Float    @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  subscriptions OrganizationSubscription[]
+
+  @@map("products")
+}
+
+// Organization Subscriptions (Licensing)
+model OrganizationSubscription {
+  id                  String           @id @default(uuid())
+  organizationId      String
+  productId           String
+  status              SubscriptionStatus @default(ACTIVE)
+  seats               Int              @default(1)
+  startDate           DateTime         @default(now())
+  endDate             DateTime?
+  stripeSubscriptionId String?         @unique
+  stripeCustomerId    String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, productId])
+  @@map("organization_subscriptions")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  CANCELLED
+  TRIALING
+  SUSPENDED
+}
+
+// RAG Corpus
+model RAGCorpus {
+  id             String   @id @default(uuid())
+  name           String
+  organizationId String
+  vertexCorpusId String?  @unique
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("rag_corpora")
+}
+

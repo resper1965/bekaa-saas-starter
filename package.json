@@ -1,0 +1,37 @@
+{
+  "name": "bekaa-saas-starter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Template adaptado do nextjs/saas-starter para arquitetura multi-SaaS Bekaa",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "generate:product": "tsx tools/generators/generate-product.ts",
+    "generate:module": "tsx tools/generators/generate-module.ts",
+    "db:migrate": "cd apps/api && pnpm prisma migrate dev",
+    "db:push": "cd apps/api && pnpm prisma db push",
+    "db:studio": "cd apps/api && pnpm prisma studio",
+    "db:seed": "cd apps/api && pnpm prisma db seed",
+    "sync:push": "./tools/sync/sync-to-github.sh",
+    "sync:pull": "./tools/sync/sync-from-github.sh",
+    "backup": "./tools/sync/daily-backup.sh",
+    "deploy:staging": "gcloud run deploy bekaa-web-staging --source ./apps/web",
+    "deploy:production": "gcloud run deploy bekaa-web --source ./apps/web"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.11.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
+
